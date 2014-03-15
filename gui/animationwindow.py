@@ -520,36 +520,10 @@ class AnimationTool (gtk.VBox):
         self.ani.toggle_nextprev(nextprev, checkbox.get_active())
 
     def on_insert_frames(self, button):
-        ammount = anidialogs.ask_for(self, _("Insert frames"),
-            _("Ammount of frames to insert:"), "1")
-        try:
-            ammount = int(ammount)
-        except TypeError:
-            return
-        except ValueError:
-            dialogs.error(self, _("Ammount of frames must be integer"))
-            return
-        if ammount < 1:
-            dialogs.error(self, 
-                _("Ammount of frames must be bigger than one"))
-            return
-        self.ani.insert_frames(ammount)
+        self.ani.insert_frames(1)
 
     def on_remove_frames(self, button):
-        ammount = anidialogs.ask_for(self, _("Remove frames"),
-            _("Ammount of frames to remove:"), "1")
-        try:
-            ammount = int(ammount)
-        except TypeError:
-            return
-        except ValueError:
-            dialogs.error(self, _("Ammount of frames must be integer"))
-            return
-        if ammount < 1:
-            dialogs.error(self, 
-                _("Ammount of frames must be bigger than one"))
-            return
-        self.ani.remove_frames(ammount)
+        self.ani.remove_frames(1)
 
     def on_cut(self, button):
         self.ani.cutcopy_cel('cut')
