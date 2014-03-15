@@ -54,6 +54,7 @@ class AnimationTool (gtk.VBox):
         treesel = self.treeview.get_selection()
         treesel.set_mode(gtk.SELECTION_SINGLE)
         self.changed_handler = treesel.connect('changed', self.on_row_changed)
+        self.treeview.connect('row-activated', self.on_row_activated)
         
         self.add_columns()
         
@@ -80,10 +81,6 @@ class AnimationTool (gtk.VBox):
         self.skip_button = pixbuf_button(pixbuf_skip)
         self.skip_button.connect('clicked', self.on_toggle_skip)
         self.skip_button.set_tooltip_text(_('Set/Unset onion skin'))
-
-        self.chdesc_button = stock_button(gtk.STOCK_ITALIC)
-        self.chdesc_button.connect('clicked', self.on_change_description)
-        self.chdesc_button.set_tooltip_text(_('Change Cel Description'))
         
         pixbuf_add = self.app.pixmaps.cel_add
         self.add_cel_button = pixbuf_button(pixbuf_add)
@@ -98,7 +95,6 @@ class AnimationTool (gtk.VBox):
         buttons_hbox = gtk.HBox()
         buttons_hbox.pack_start(self.key_button)
         buttons_hbox.pack_start(self.skip_button)
-        buttons_hbox.pack_start(self.chdesc_button)
         buttons_hbox.pack_start(self.add_cel_button)
         buttons_hbox.pack_start(self.remove_cel_button)
 
@@ -396,7 +392,16 @@ class AnimationTool (gtk.VBox):
         frame_idx = path[COLUMNS_ID['frame_index']]
         self.ani.select_frame(frame_idx)
         self._update_buttons_sensitive()
-        
+    
+    def on_row_activated(self, a, r, g):
+        treesel = self.treeview.get_selection()
+        model, it = treesel.get_selected()
+        frame = model.get_value(it, COLUMNS_ID['frame_data'])
+        description = anidialogs.ask_for(self, _("Change description"),
+            _("Description"), frame.description)
+        if description:
+            self.ani.change_description(description)
+            
     def on_toggle_key(self, button):
         self.ani.toggle_key()
 
@@ -408,16 +413,6 @@ class AnimationTool (gtk.VBox):
     
     def on_next_frame(self, button):
         self.ani.next_frame()
-    
-    def on_change_description(self, button):
-        treesel = self.treeview.get_selection()
-        model, it = treesel.get_selected()
-        frame = model.get_value(it, COLUMNS_ID['frame_data'])
-        
-        description = anidialogs.ask_for(self, _("Change description"),
-            _("Description"), frame.description)
-        if description:
-            self.ani.change_description(description)
     
     def on_add_cel(self, button):
         self.ani.add_cel()
