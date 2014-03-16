@@ -18,6 +18,7 @@ def layername_from_description(description):
 
 
 class SelectFrame(Action):
+    display_name = _("Select frame")
     def __init__(self, doc, idx):
         self.doc = doc
         self.frames = doc.ani.frames
@@ -47,6 +48,7 @@ class SelectFrame(Action):
 
 
 class ToggleKey(Action):
+    display_name = _("Toggle key")
     def __init__(self, doc, frame):
         self.doc = doc
         self.frame = frame
@@ -64,6 +66,7 @@ class ToggleKey(Action):
 
 
 class ToggleSkipVisible(Action):
+    display_name = _("Toggle skip visible")
     def __init__(self, doc, frame):
         self.doc = doc
         self.frame = frame
@@ -81,6 +84,7 @@ class ToggleSkipVisible(Action):
 
 
 class ChangeDescription(Action):
+    display_name = _("Change description")
     def __init__(self, doc, frame, new_description):
         self.doc = doc
         self.frame = frame
@@ -104,6 +108,7 @@ class ChangeDescription(Action):
 
 
 class AddCel(Action):
+    display_name = _("Add cel")
     def __init__(self, doc, frame):
         self.doc = doc
         self.frame = frame
@@ -133,6 +138,7 @@ class AddCel(Action):
 
 
 class InsertFrames(Action):
+    display_name = _("Insert Frame")
     def __init__(self, doc, length):
         self.doc = doc
         self.frames = doc.ani.frames
@@ -194,6 +200,7 @@ class RemoveFrameCel(Action):
 
 
 class AppendFrames(Action):
+    display_name = _("Append frame")
     def __init__(self, doc, length):
         self.doc = doc
         self.frames = doc.ani.frames
@@ -211,6 +218,7 @@ class AppendFrames(Action):
 
 
 class PasteCel(Action):
+    display_name = _("Paste cel")
     def __init__(self, doc, frame):
         self.doc = doc
         self.frame = frame
