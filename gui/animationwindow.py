@@ -87,16 +87,22 @@ class AnimationTool (gtk.VBox):
         self.add_cel_button.connect('clicked', self.on_add_cel)
         self.add_cel_button.set_tooltip_text(_('Add cel to this frame'))
         
-        pixbuf_remove = self.app.pixmaps.cel_remove
-        self.remove_cel_button = pixbuf_button(pixbuf_remove)
-        self.remove_cel_button.connect('clicked', self.on_remove_cel)
-        self.remove_cel_button.set_tooltip_text(_('Remove cel of this frame'))
+        insert_frame_button = stock_button(gtk.STOCK_ADD)
+        insert_frame_button.connect('clicked', self.on_insert_frame)
+        insert_frame_button.set_tooltip_text(_('Insert frame'))
+        self.insert_frame_button = insert_frame_button
+
+        remove_frame_button = stock_button(gtk.STOCK_REMOVE)
+        remove_frame_button.connect('clicked', self.on_remove_frame)
+        remove_frame_button.set_tooltip_text(_('Remove frame / cel'))
+        self.remove_frame_button = remove_frame_button
         
         buttons_hbox = gtk.HBox()
         buttons_hbox.pack_start(self.key_button)
         buttons_hbox.pack_start(self.skip_button)
         buttons_hbox.pack_start(self.add_cel_button)
-        buttons_hbox.pack_start(self.remove_cel_button)
+        buttons_hbox.pack_start(insert_frame_button)
+        buttons_hbox.pack_start(remove_frame_button)
 
         # player controls:
         
@@ -128,17 +134,6 @@ class AnimationTool (gtk.VBox):
         anibuttons_hbox.pack_start(self.stop_button)
 
         # frames edit controls:
-        
-        insert_frame_button = stock_button(gtk.STOCK_ADD)
-        insert_frame_button.connect('clicked', self.on_insert_frames)
-        insert_frame_button.set_tooltip_text(_('Insert frames'))
-        self.insert_frame_button = insert_frame_button
-
-        remove_frame_button = stock_button(gtk.STOCK_REMOVE)
-        remove_frame_button.connect('clicked', self.on_remove_frames)
-        remove_frame_button.set_tooltip_text(_('Remove frames'))
-        self.remove_frame_button = remove_frame_button
-
         cut_button = stock_button(gtk.STOCK_CUT)
         cut_button.connect('clicked', self.on_cut)
         cut_button.set_tooltip_text(_('Cut cel'))
@@ -155,8 +150,6 @@ class AnimationTool (gtk.VBox):
         self.paste_button = paste_button
 
         editbuttons_hbox = gtk.HBox()
-        editbuttons_hbox.pack_start(insert_frame_button)
-        editbuttons_hbox.pack_start(remove_frame_button)
         editbuttons_hbox.pack_start(cut_button)
         editbuttons_hbox.pack_start(copy_button)
         editbuttons_hbox.pack_start(paste_button)
@@ -374,14 +367,6 @@ class AnimationTool (gtk.VBox):
         self.cut_button.set_sensitive(self.ani.can_cutcopy())
         self.copy_button.set_sensitive(self.ani.can_cutcopy())
         self.paste_button.set_sensitive(self.ani.can_paste())
-        
-        f = self.ani.frames.get_selected()
-        if f.cel is None:
-            self.add_cel_button.show()
-            self.remove_cel_button.hide()
-        else:
-            self.add_cel_button.hide()
-            self.remove_cel_button.show()
 
     def doc_structure_modified_cb(self, *args):
         self.framerate_adjustment.set_value(self.ani.framerate)
@@ -416,9 +401,12 @@ class AnimationTool (gtk.VBox):
     
     def on_add_cel(self, button):
         self.ani.add_cel()
-    
-    def on_remove_cel(self, button):
-        self.ani.remove_cel()
+        
+    def on_insert_frame(self, button):
+        self.ani.insert_frames(1)
+
+    def on_remove_frame(self, button):
+        self.ani.remove_frame()
     
     def _get_row_class(self, model, it):
         """Return 0 if even row, 1 if odd row."""
@@ -518,12 +506,6 @@ class AnimationTool (gtk.VBox):
     def on_shownextprev_toggled(self, checkbox, nextprev):
         self.app.preferences["xsheet.lightbox_show_" + nextprev] = checkbox.get_active()
         self.ani.toggle_nextprev(nextprev, checkbox.get_active())
-
-    def on_insert_frames(self, button):
-        self.ani.insert_frames(1)
-
-    def on_remove_frames(self, button):
-        self.ani.remove_frames(1)
 
     def on_cut(self, button):
         self.ani.cutcopy_cel('cut')

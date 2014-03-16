@@ -334,11 +334,12 @@ class Animation(object):
             return
         self.doc.do(anicommand.AddCel(self.doc, frame))
 
-    def remove_cel(self):
+    def insert_frames(self, ammount=1):
+        self.doc.do(anicommand.InsertFrames(self.doc, ammount))
+
+    def remove_frame(self):
         frame = self.frames.get_selected()
-        if frame.cel is None:
-            return
-        self.doc.do(anicommand.RemoveCel(self.doc, frame))
+        self.doc.do(anicommand.RemoveFrameCel(self.doc, frame))
 
     def select_frame(self, idx):
         self.doc.do(anicommand.SelectFrame(self.doc, idx))
@@ -355,12 +356,6 @@ class Animation(object):
         self.frames.setup_nextprev({nextprev: is_active})
         self.update_opacities()
     
-    def insert_frames(self, ammount=1):
-        self.doc.do(anicommand.InsertFrames(self.doc, ammount))
-
-    def remove_frames(self, ammount=1):
-        self.doc.do(anicommand.RemoveFrames(self.doc, ammount))
-
     def can_cutcopy(self):
         frame = self.frames.get_selected()
         return frame.cel is not None
